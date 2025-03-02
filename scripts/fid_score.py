@@ -29,7 +29,8 @@ from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 import torch
 import numpy as np
-from scipy.misc import imread
+# from scipy.misc import imread
+from cv2 import imread
 from scipy import linalg
 from torch.autograd import Variable
 from torch.nn.functional import adaptive_avg_pool2d

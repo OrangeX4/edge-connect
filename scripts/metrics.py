@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 
 from glob import glob
 from ntpath import basename
-from scipy.misc import imread
+# from scipy.misc import imread
+from cv2 import imread
 from skimage.measure import compare_ssim
 from skimage.measure import compare_psnr
 from skimage.color import rgb2gray
