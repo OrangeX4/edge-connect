@@ -6,8 +6,8 @@ from glob import glob
 from ntpath import basename
 # from scipy.misc import imread
 from cv2 import imread
-from skimage.measure import compare_ssim
-from skimage.measure import compare_psnr
+from skimage.metrics import structural_similarity as compare_ssim
+from skimage.metrics import peak_signal_noise_ratio as compare_psnr
 from skimage.color import rgb2gray
 
 

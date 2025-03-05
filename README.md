@@ -82,9 +82,9 @@ python test.py \
 We provide some test examples under `./examples` directory. Please download the [pre-trained models](#getting-started) and run:
 ```bash
 python test.py \
-  --checkpoints ./checkpoints/places2 
-  --input ./examples/places2/images 
-  --mask ./examples/places2/masks
+  --checkpoints ./checkpoints/places2 \
+  --input ./examples/places2/images \
+  --mask ./examples/places2/masks \
   --output ./checkpoints/results
 ```
 This script will inpaint all images in `./examples/places2/images` using their corresponding masks in `./examples/places2/mask` directory and saves the results in `./checkpoints/results` directory. By default `test.py` script is run on stage 3 (`--model=3`).
