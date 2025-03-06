@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 from .networks import InpaintGenerator, EdgeGenerator, Discriminator
 from .loss import AdversarialLoss, PerceptualLoss, StyleLoss
+from .controlnet_model import ControlNetInpaintingModel
 
 
 class BaseModel(nn.Module):
@@ -154,13 +155,20 @@ class InpaintingModel(BaseModel):
     def __init__(self, config):
         super(InpaintingModel, self).__init__('InpaintingModel', config)
 
+        # Check if we should use ControlNet
+        self.use_controlnet = hasattr(config, 'USE_CONTROLNET') and config.USE_CONTROLNET
+
+        if self.use_controlnet:
+            # Use ControlNet for inpainting
+            self.controlnet = ControlNetInpaintingModel(config)
+
         # generator input: [rgb(3) + edge(1)]
         # discriminator input: [rgb(3)]
         generator = InpaintGenerator()
         discriminator = Discriminator(in_channels=3, use_sigmoid=config.GAN_LOSS != 'hinge')
         if len(config.GPU) > 1:
             generator = nn.DataParallel(generator, config.GPU)
-            discriminator = nn.DataParallel(discriminator , config.GPU)
+            discriminator = nn.DataParallel(discriminator, config.GPU)
 
         l1_loss = nn.L1Loss()
         perceptual_loss = PerceptualLoss()
@@ -188,6 +196,9 @@ class InpaintingModel(BaseModel):
         )
 
     def process(self, images, edges, masks):
+        if self.use_controlnet:
+            raise NotImplementedError("The process method is not implemented for ControlNet model. Use forward instead.")
+        
         self.iteration += 1
 
         # zero optimizers
@@ -246,13 +257,18 @@ class InpaintingModel(BaseModel):
 
         return outputs, gen_loss, dis_loss, logs
 
-    def forward(self, images, edges, masks):
+    def forward(self, images, edges, masks, **kwargs):
+        if self.use_controlnet:
+            return self.controlnet(images, edges, masks, **kwargs)
         images_masked = (images * (1 - masks).float()) + masks
         inputs = torch.cat((images_masked, edges), dim=1)
         outputs = self.generator(inputs)                                    # in: [rgb(3) + edge(1)]
         return outputs
 
     def backward(self, gen_loss=None, dis_loss=None):
+        if self.use_controlnet:
+            raise NotImplementedError("The backward method is not implemented for ControlNet model.")
+        
         if dis_loss is not None:
             dis_loss.backward(retain_graph=True)  # Add retain_graph=True
         self.dis_optimizer.step()

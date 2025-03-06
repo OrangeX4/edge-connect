@@ -83,6 +83,8 @@ def load_config(mode=None):
         parser.add_argument('--mask', type=str, help='path to the masks directory or a mask file')
         parser.add_argument('--edge', type=str, help='path to the edges directory or an edge file')
         parser.add_argument('--output', type=str, help='path to the output directory')
+        # use_controlnet
+        parser.add_argument('--use_controlnet', action='store_true', help='use controlnet for better inpainting results')
 
     args = parser.parse_args()
     config_path = os.path.join(args.path, 'config.yml')
@@ -121,6 +123,9 @@ def load_config(mode=None):
 
         if args.output is not None:
             config.RESULTS = args.output
+
+        if args.use_controlnet:
+            config.USE_CONTROLNET = True
 
     # eval mode
     elif mode == 3:
