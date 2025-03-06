@@ -37,8 +37,8 @@ class ControlNetInpaintingModel(nn.Module):
         if torch.cuda.is_available():
             self.pipeline.to('cuda')
     
-    def forward(self, images, edges, masks, prompt="", num_inference_steps=20, 
-                controlnet_conditioning_scale=0.5, guidance_scale=7.5, seed=None):
+    def forward(self, images, edges, masks, prompt="", num_inference_steps=20,
+                controlnet_conditioning_scale=0.5, guidance_scale=0.0, seed=None):
         """
         Forward pass for ControlNet inpainting.
         
