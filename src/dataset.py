@@ -8,7 +8,8 @@ import torchvision.transforms.functional as F
 from torch.utils.data import DataLoader
 from PIL import Image
 # from scipy.misc import imread
-from cv2 import imread
+from cv2 import imread as cv2_imread, cvtColor, COLOR_BGR2RGB
+imread = lambda x: cvtColor(cv2_imread(x), COLOR_BGR2RGB)
 from skimage.transform import resize
 from skimage.feature import canny
 from skimage.color import rgb2gray, gray2rgb
